@@ -1,0 +1,1718 @@
+{
+  "name": "03 📅 Auto-Poster — Instagram, Facebook, X",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "99174b4b-0a14-4dc8-9ce2-8f5fd2966b64",
+      "name": "Schedule: 6am Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        -160
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ee664039-cf05-4a5f-ac46-b44088b0b11e",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        256,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b14fe6a2-d766-40d5-ab56-272e1e9c533b",
+              "name": "run_id",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "f3b18de2-33e6-461f-9837-0cd4f56a0fad",
+              "name": "subreddits",
+              "value": "conspiracy,todayilearned,interestingasfuck,Damnthatsinteresting,UnresolvedMysteries,MindBlown",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ed9d642-b2f8-4103-8f7e-e6b0ee9a99a4",
+      "name": "Initialize Run",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/conspiracy/hot.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "25"
+            },
+            {
+              "name": "raw_json",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "id": "e47fe12d-cfd3-4a69-aa83-93f25dac24e0",
+      "name": "Reddit: r/conspiracy",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/todayilearned/hot.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "25"
+            },
+            {
+              "name": "raw_json",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "da5c2ad5-3490-4f81-9797-042cd72bc121",
+      "name": "Reddit: r/todayilearned",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/interestingasfuck/hot.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "20"
+            },
+            {
+              "name": "raw_json",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "4f78e9a6-c00e-4ab1-a537-ad6faa18fc37",
+      "name": "Reddit: r/interestingasfuck",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/everything",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "conspiracy theory OR shocking discovery OR hidden history OR unexplained mystery"
+            },
+            {
+              "name": "language",
+              "value": "en"
+            },
+            {
+              "name": "sortBy",
+              "value": "popularity"
+            },
+            {
+              "name": "pageSize",
+              "value": "20"
+            },
+            {
+              "name": "apiKey",
+              "value": "={{ $vars.NEWS_API_KEY }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "4b06c0f3-a578-48d8-8bc8-457472c89720",
+      "name": "NewsAPI: Fetch Articles",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.snopes.com/feed/",
+        "options": {}
+      },
+      "id": "518c1508-f7bd-49a4-a793-53817470c57f",
+      "name": "RSS: Snopes",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        704,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.ancient-origins.net/rss.xml",
+        "options": {}
+      },
+      "id": "c5c3dc43-5211-48d4-8345-f0d8c11e33ab",
+      "name": "RSS: Ancient Origins",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        704,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst items = $input.all();\nconst normalized = [];\n\nfor (const item of items) {\n  const data = item.json;\n  \n  // Handle Reddit response\n  if (data.data && data.data.children) {\n    for (const post of data.data.children) {\n      const p = post.data;\n      if (!p || p.stickied || p.score < 500) continue;\n      \n      const title = p.title || '';\n      const subreddit = p.subreddit || '';\n      \n      // Classify category\n      let category = 'interesting';\n      const t = title.toLowerCase();\n      if (['conspiracy','secret','hidden','classified','exposed','cover up'].some(w => t.includes(w)) || subreddit === 'conspiracy') {\n        category = 'conspiracy';\n      } else if (['fact','learn','know','science','history','discovered'].some(w => t.includes(w))) {\n        category = 'trivia';\n      }\n      \n      normalized.push({\n        title: title.substring(0, 300),\n        summary: (p.selftext || title).substring(0, 500),\n        source: 'reddit',\n        source_url: 'https://reddit.com' + (p.permalink || ''),\n        category: category,\n        reddit_score: p.score,\n        comments: p.num_comments || 0,\n        trending_signal: Math.min((p.score / 5000) * 100, 100),\n        engagement_signal: Math.min(((p.num_comments || 0) / 300) * 100, 100),\n        evergreen_score: 70,\n        keywords: title.toLowerCase().split(' ').filter(w => w.length > 4).slice(0, 8).join(',')\n      });\n    }\n  }\n  \n  // Handle NewsAPI response\n  if (data.articles) {\n    for (const article of data.articles) {\n      if (!article.title || article.title === '[Removed]') continue;\n      const t = article.title.toLowerCase();\n      let category = 'trivia';\n      if (['conspiracy','secret','hidden','exposed','leaked'].some(w => t.includes(w))) category = 'conspiracy';\n      \n      normalized.push({\n        title: article.title.substring(0, 300),\n        summary: (article.description || article.title).substring(0, 500),\n        source: 'newsapi',\n        source_url: article.url || '',\n        category: category,\n        trending_signal: 70,\n        engagement_signal: 55,\n        evergreen_score: 40,\n        keywords: article.title.toLowerCase().split(' ').filter(w => w.length > 4).slice(0, 8).join(',')\n      });\n    }\n  }\n  \n  // Handle RSS response (single item)\n  if (data.title && !data.data && !data.articles) {\n    const t = (data.title || '').toLowerCase();\n    let category = 'trivia';\n    if (['conspiracy','mystery','unexplained','ancient','secret'].some(w => t.includes(w))) category = 'conspiracy';\n    \n    normalized.push({\n      title: (data.title || '').substring(0, 300),\n      summary: (data.contentSnippet || data.summary || data.title || '').substring(0, 500),\n      source: 'rss',\n      source_url: data.link || '',\n      category: category,\n      trending_signal: 55,\n      engagement_signal: 50,\n      evergreen_score: 65,\n      keywords: (data.title || '').toLowerCase().split(' ').filter(w => w.length > 4).slice(0, 8).join(',')\n    });\n  }\n}\n\nreturn normalized.map(n => ({ json: n }));\n"
+      },
+      "id": "b5677e8c-9a1c-485f-8f7b-f984da0bcbc8",
+      "name": "Normalize All Sources",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst items = $input.all();\nconst WEIGHTS = { trending: 0.40, engagement: 0.25, evergreen: 0.15, novelty: 0.20 };\nconst MIN_SCORE = 60;\n\n// Deduplicate by title similarity (Jaccard)\nfunction normalize(text) {\n  return (text || '').toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();\n}\nfunction similarity(a, b) {\n  const wa = new Set(normalize(a).split(' ').filter(w => w.length > 3));\n  const wb = new Set(normalize(b).split(' ').filter(w => w.length > 3));\n  const intersection = [...wa].filter(w => wb.has(w)).length;\n  const union = new Set([...wa, ...wb]).size;\n  return union === 0 ? 0 : intersection / union;\n}\n\nconst seenTitles = [];\nconst scored = [];\n\nfor (const item of items) {\n  const d = item.json;\n  if (!d.title || d.title.length < 10) continue;\n  \n  // Check for duplicates\n  const isDup = seenTitles.some(t => similarity(d.title, t) > 0.55);\n  if (isDup) continue;\n  seenTitles.push(d.title);\n  \n  // Calculate composite score\n  const novelty = 100; // No DB in n8n; dedup handled above\n  const total = (\n    (d.trending_signal || 50) * WEIGHTS.trending +\n    (d.engagement_signal || 50) * WEIGHTS.engagement +\n    (d.evergreen_score || 60) * WEIGHTS.evergreen +\n    novelty * WEIGHTS.novelty\n  );\n  \n  if (total < MIN_SCORE) continue;\n  \n  scored.push({\n    json: {\n      title: d.title,\n      summary: d.summary || d.title,\n      source: d.source || 'unknown',\n      source_url: d.source_url || '',\n      category: d.category || 'interesting',\n      keywords: d.keywords || '',\n      score_total: Math.round(total * 10) / 10,\n      status: 'pending',\n      discovered_at: new Date().toISOString()\n    }\n  });\n}\n\n// Sort by score desc, take top 20\nscored.sort((a, b) => b.json.score_total - a.json.score_total);\nreturn scored.slice(0, 20);\n"
+      },
+      "id": "ecfeadc7-c6b0-4dd6-8a8c-c088c0d3b1aa",
+      "name": "Score & Deduplicate Topics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "=1rWweBI5wUffIEhDKJLmaNxZJwcMdpMyTsQVxx0EkkUo",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Topics",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "10b504db-e212-4c50-8a1d-e1ec27c0e1a4",
+      "name": "Save Topics to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        1424,
+        112
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "F67qq4N1vNrpon4X",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst items = $input.all();\nconst count = items.length;\nconst topTopics = items.slice(0, 5).map((i, idx) => \n  `${idx+1}. [${i.json['Category']}] ${(i.json['Title'] || '').substring(0, 80)} (Score: ${i.json['Score']})`\n).join('\\n');\n\nreturn [{\n  json: {\n    message: `🔍 *Research Complete!*\\n\\n📊 *${count} topics saved* to Google Sheets\\n\\n*Top 5 Topics:*\\n${topTopics}\\n\\n⏰ Content generation starts at 7am.`\n  }\n}];\n"
+      },
+      "id": "b7968ee8-169e-4c28-b140-096280b24654",
+      "name": "Build Telegram Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "6451569672",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "d768a1f0-96cc-43b7-b58a-13f58a7aa95a",
+      "name": "Telegram: Research Summary",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1904,
+        112
+      ],
+      "webhookId": "4fbafbca-25ec-48e0-af19-4ac92a879ec6",
+      "credentials": {
+        "telegramApi": {
+          "id": "tNuMqtJv5ljuqYpb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      },
+      "id": "652c61ae-3dae-4703-b52a-0a43a143c3d2",
+      "name": "Schedule: 7am Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        784,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "readAllMatchingRows",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        }
+      },
+      "id": "18f0d216-d624-433f-bb2d-5bbf26c78a04",
+      "name": "Read Pending Topics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        1040,
+        1152
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nCFlJRaYqeFic8V2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond1",
+              "leftValue": "={{ $json.Title }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e08bfe9e-24c2-4153-966f-fe27f968e0db",
+      "name": "Has Topics?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        1152
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Limit to top 5 topics (by Score) to avoid API overuse\nconst items = $input.all();\nitems.sort((a, b) => (parseFloat(b.json.Score) || 0) - (parseFloat(a.json.Score) || 0));\nreturn items.slice(0, 5);\n"
+      },
+      "id": "743bc71f-2fe2-4a1e-8caf-1b95789443fb",
+      "name": "Take Top 5 Topics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4791e8eb-3662-4088-90fb-1362873532f4",
+      "name": "Loop: One Topic at a Time",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "551cc63d-154b-4c58-9a00-afbb4f20475c",
+      "name": "Claude: Instagram Carousel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        928
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "e8ab7314-cafd-42f1-84ec-2a7bd3e44406",
+      "name": "Claude: Facebook Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "238ce91d-8336-4532-848e-426b44ee3527",
+      "name": "Claude: X Thread",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        1216
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const raw = item.json;\n  // Claude returns { content: [{ text: \"...\" }] }\n  let text = '';\n  if (raw.content && raw.content[0] && raw.content[0].text) {\n    text = raw.content[0].text;\n  } else if (typeof raw === 'string') {\n    text = raw;\n  }\n  \n  // Extract JSON from Claude response\n  let parsed = null;\n  try {\n    // Try direct parse\n    parsed = JSON.parse(text.trim());\n  } catch(e) {\n    // Try to find JSON block\n    const start = text.indexOf('{');\n    const end = text.lastIndexOf('}') + 1;\n    if (start >= 0 && end > start) {\n      try { parsed = JSON.parse(text.substring(start, end)); } catch(e2) {}\n    }\n  }\n  \n  if (!parsed) {\n    console.log('Failed to parse Claude response:', text.substring(0, 200));\n    continue;\n  }\n  \n  results.push({ json: { parsed_content: parsed, raw_response: text.substring(0, 100) } });\n}\n\nreturn results.length > 0 ? results : [{ json: { parsed_content: null, error: 'parse_failed' } }];\n"
+      },
+      "id": "35346014-6fd5-40f1-a2be-0052fe1858dc",
+      "name": "Parse Claude Responses",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Build rows for each platform to save to Google Sheets\nconst items = $input.all();\nconst topicData = $('Loop: One Topic at a Time').first().json;\nconst rows = [];\nconst platforms = ['instagram', 'facebook', 'x'];\nconst contentTypes = ['carousel', 'post', 'thread'];\n\nfor (let i = 0; i < items.length && i < 3; i++) {\n  const item = items[i];\n  const content = item.json.parsed_content;\n  if (!content) continue;\n  \n  const platform = platforms[i];\n  const contentType = contentTypes[i];\n  \n  // Format slides / thread for storage\n  let slidesOrThread = '';\n  if (content.slides) slidesOrThread = content.slides.join(' | ');\n  if (content.thread_tweets) slidesOrThread = content.thread_tweets.join(' | ');\n  \n  rows.push({\n    'Topic Title': (topicData.Title || '').substring(0, 200),\n    'Platform': platform,\n    'Content Type': contentType,\n    'Hook': (content.hook || '').substring(0, 500),\n    'Caption': (content.caption || '').substring(0, 2000),\n    'Hashtags': (content.hashtags || '').substring(0, 300),\n    'Slides or Thread': slidesOrThread.substring(0, 3000),\n    'CTA': (content.cta || '').substring(0, 300),\n    'Image Prompt': (content.image_prompt || '').substring(0, 500),\n    'Quality Score': content.quality_score || 75,\n    'Status': 'draft',\n    'Created At': new Date().toISOString()\n  });\n}\n\nreturn rows.map(r => ({ json: r }));\n"
+      },
+      "id": "22d7190d-507d-4c48-82ac-fbe03517e9f8",
+      "name": "Build Content Rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Content Queue",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic Title": "={{ $json['Topic Title'] }}",
+            "Platform": "={{ $json.Platform }}",
+            "Content Type": "={{ $json['Content Type'] }}",
+            "Hook": "={{ $json.Hook }}",
+            "Caption": "={{ $json.Caption }}",
+            "Hashtags": "={{ $json.Hashtags }}",
+            "Slides or Thread": "={{ $json['Slides or Thread'] }}",
+            "CTA": "={{ $json.CTA }}",
+            "Image Prompt": "={{ $json['Image Prompt'] }}",
+            "Quality Score": "={{ $json['Quality Score'] }}",
+            "Status": "={{ $json.Status }}",
+            "Created At": "={{ $json['Created At'] }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "bd74bfe2-91c9-4a83-959e-c5aa19f0d0bf",
+      "name": "Save Drafts to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        2720,
+        1072
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nCFlJRaYqeFic8V2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Topics",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "used"
+          },
+          "matchingColumns": [
+            "Title"
+          ]
+        },
+        "options": {}
+      },
+      "id": "4aa2fc04-f3de-4978-acea-fe5b1a787eab",
+      "name": "Mark Topic as Used",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        2960,
+        1072
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nCFlJRaYqeFic8V2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "c5a26527-e43d-4e3a-82e1-8e8ad58ee913",
+      "name": "Continue Loop",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3200,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID }}",
+        "text": "✍️ *Content Generation Complete!*\n\nNew drafts saved to Google Sheets.\n\n👉 Review & approve them now:\nhttps://docs.google.com/spreadsheets/d/{{ $vars.GOOGLE_SHEET_ID }}\n\n📅 Auto-posting starts at peak hours.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "e3b463a5-4b5d-4d15-9018-5fe25de61aae",
+      "name": "Telegram: Drafts Ready",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3440,
+        1072
+      ],
+      "webhookId": "60cdb361-7b06-4ca8-b2d2-a9c5faf3c518",
+      "credentials": {
+        "telegramApi": {
+          "id": "tNuMqtJv5ljuqYpb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID }}",
+        "text": "⚠️ *Content Agent:* No pending topics found.\n\nRun the Research Agent first.",
+        "additionalFields": {}
+      },
+      "id": "0f257d67-3d96-4cc8-b035-da71a2a3acdd",
+      "name": "Telegram: No Topics Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1520,
+        1280
+      ],
+      "webhookId": "bf9a753d-eaca-451d-bba7-febaf8647136",
+      "credentials": {
+        "telegramApi": {
+          "id": "tNuMqtJv5ljuqYpb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9,12,19 * * *"
+            }
+          ]
+        }
+      },
+      "id": "05866c2c-daec-418d-b551-34992c7c162f",
+      "name": "Schedule: Peak Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        1904
+      ],
+      "notes": "Runs at 9am, 12pm, 7pm daily"
+    },
+    {
+      "parameters": {
+        "operation": "readAllMatchingRows",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        }
+      },
+      "id": "37ba03e6-f6fc-4024-9dd5-12d872fd29dd",
+      "name": "Get Approved Content",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        1616,
+        1984
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nCFlJRaYqeFic8V2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.Hook }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e3f749ea-a197-4b0e-b620-8ec31297d5eb",
+      "name": "Has Approved Content?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1856,
+        1984
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Pick 1 post per platform max per run to respect rate limits\nconst items = $input.all();\nconst byPlatform = {};\nfor (const item of items) {\n  const p = item.json.Platform;\n  if (!byPlatform[p]) byPlatform[p] = item;\n}\nreturn Object.values(byPlatform).map(i => ({ json: i.json }));\n"
+      },
+      "id": "f2af4df2-5901-4399-85e0-f687e8ceeaed",
+      "name": "1 Post Per Platform",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2096,
+        1904
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "a28f741a-a912-415e-9af7-039243f65ac3",
+      "name": "Loop Posts",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2336,
+        1904
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Platform }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "eq"
+                    },
+                    "rightValue": "instagram"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Instagram"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Platform }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "eq"
+                    },
+                    "rightValue": "facebook"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Facebook"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Platform }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "eq"
+                    },
+                    "rightValue": "x"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "X"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "a5ac7430-0306-4e06-97ee-f5fb9fd7d22f",
+      "name": "Route by Platform",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2576,
+        1904
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $vars.META_INSTAGRAM_ACCOUNT_ID }}/media",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "caption",
+              "value": "={{ $json.Caption + '\\n\\n' + $json.Hashtags }}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $vars.DEFAULT_IMAGE_URL }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $vars.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "d42532ff-f8ba-4960-a358-dd851220bb5f",
+      "name": "Instagram: Create Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2816,
+        1744
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $vars.META_INSTAGRAM_ACCOUNT_ID }}/media_publish",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $vars.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "d84096a4-aff3-4805-b310-d361f9d2b3ab",
+      "name": "Instagram: Publish Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3056,
+        1744
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $vars.META_FACEBOOK_PAGE_ID }}/feed",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $json.Hook + '\\n\\n' + $json.Caption + '\\n\\n' + $json.CTA + '\\n\\n' + $json.Hashtags }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $vars.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "5230f096-ac1a-4032-921b-327325f94f04",
+      "name": "Facebook: Publish Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2816,
+        1904
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst item = $input.first().json;\n// Parse thread tweets from pipe-separated storage\nconst tweetsRaw = item['Slides or Thread'] || item.Hook || '';\nconst tweets = tweetsRaw.split(' | ').filter(t => t.trim().length > 0);\n\n// Build X API v2 thread payload (create_tweet with reply chain)\n// First tweet\nreturn [{ json: { tweets: tweets, current_index: 0, reply_to_id: null, topic_title: item['Topic Title'] } }];\n"
+      },
+      "id": "d13ad09e-64ee-4199-aa82-87642f2f84bc",
+      "name": "Prepare X Thread",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2816,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twitter.com/2/tweets",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth1Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "acffb0d6-a7a7-446d-a849-60fb5c1156fd",
+      "name": "X: Post First Tweet",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3056,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst items = $input.all();\nconst postItem = $('Loop Posts').first().json;\nconst results = [];\n\nfor (const item of items) {\n  const platformPostId = item.json.id || item.json.data?.id || 'unknown';\n  results.push({\n    json: {\n      'Topic Title': postItem['Topic Title'] || '',\n      'Platform': postItem.Platform || '',\n      'Status': 'posted',\n      'Platform Post ID': platformPostId,\n      'Posted At': new Date().toISOString()\n    }\n  });\n}\nreturn results;\n"
+      },
+      "id": "b58d8d11-c699-4475-85ee-82763f58b0db",
+      "name": "Build Posted Log",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3296,
+        1904
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Content Queue",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "posted",
+            "Posted At": "={{ $json['Posted At'] }}",
+            "Platform Post ID": "={{ $json['Platform Post ID'] }}"
+          },
+          "matchingColumns": [
+            "Topic Title",
+            "Platform"
+          ]
+        },
+        "options": {}
+      },
+      "id": "d3d27011-4fd1-4647-a070-1077f3438f29",
+      "name": "Mark as Posted in Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        3536,
+        1904
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nCFlJRaYqeFic8V2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Posted Log",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic Title": "={{ $json['Topic Title'] }}",
+            "Platform": "={{ $json.Platform }}",
+            "Platform Post ID": "={{ $json['Platform Post ID'] }}",
+            "Posted At": "={{ $json['Posted At'] }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "693a7ed4-ff1e-40ff-8649-09727892be50",
+      "name": "Log to Posted Log Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        3776,
+        1904
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nCFlJRaYqeFic8V2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID }}",
+        "text": "=📤 *Posted!*\n\n🔹 Platform: {{ $json.Platform }}\n🔹 Topic: {{ ($json['Topic Title'] || '').substring(0, 60) }}\n🔹 Post ID: {{ $json['Platform Post ID'] }}\n🔹 Time: {{ $json['Posted At'] }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "fe5ba385-ed93-4dd0-8763-4668ad2737c7",
+      "name": "Telegram: Posted Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4016,
+        1904
+      ],
+      "webhookId": "8807f857-67b3-4111-98a2-ff00e44a29ff",
+      "credentials": {
+        "telegramApi": {
+          "id": "tNuMqtJv5ljuqYpb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "bb98af1f-c3ff-4aaa-929c-77fdbe410ae0",
+      "name": "Next Post",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        4256,
+        1904
+      ]
+    },
+    {
+      "parameters": {
+        "content": "- Connect APIs\n- Meta Account and Instagram Business account(check price)",
+        "height": 1040,
+        "width": 1232
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4016,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "56534e58-4ec2-4a7d-84bf-854c8374fe4b",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule: 6am Daily": {
+      "main": [
+        [
+          {
+            "node": "Initialize Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Initialize Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Run": {
+      "main": [
+        [
+          {
+            "node": "Reddit: r/conspiracy",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Reddit: r/todayilearned",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Reddit: r/interestingasfuck",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "NewsAPI: Fetch Articles",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS: Snopes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS: Ancient Origins",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reddit: r/conspiracy": {
+      "main": [
+        [
+          {
+            "node": "Normalize All Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reddit: r/todayilearned": {
+      "main": [
+        [
+          {
+            "node": "Normalize All Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reddit: r/interestingasfuck": {
+      "main": [
+        [
+          {
+            "node": "Normalize All Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NewsAPI: Fetch Articles": {
+      "main": [
+        [
+          {
+            "node": "Normalize All Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS: Snopes": {
+      "main": [
+        [
+          {
+            "node": "Normalize All Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS: Ancient Origins": {
+      "main": [
+        [
+          {
+            "node": "Normalize All Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize All Sources": {
+      "main": [
+        [
+          {
+            "node": "Score & Deduplicate Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score & Deduplicate Topics": {
+      "main": [
+        [
+          {
+            "node": "Save Topics to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Topics to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Build Telegram Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Telegram Summary": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Research Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule: 7am Daily": {
+      "main": [
+        [
+          {
+            "node": "Read Pending Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Pending Topics": {
+      "main": [
+        [
+          {
+            "node": "Has Topics?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Topics?": {
+      "main": [
+        [
+          {
+            "node": "Take Top 5 Topics",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: No Topics Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Top 5 Topics": {
+      "main": [
+        [
+          {
+            "node": "Loop: One Topic at a Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop: One Topic at a Time": {
+      "main": [
+        [
+          {
+            "node": "Claude: Instagram Carousel",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Claude: Facebook Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Claude: X Thread",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Drafts Ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude: Instagram Carousel": {
+      "main": [
+        [
+          {
+            "node": "Parse Claude Responses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude: Facebook Post": {
+      "main": [
+        [
+          {
+            "node": "Parse Claude Responses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude: X Thread": {
+      "main": [
+        [
+          {
+            "node": "Parse Claude Responses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Claude Responses": {
+      "main": [
+        [
+          {
+            "node": "Build Content Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Content Rows": {
+      "main": [
+        [
+          {
+            "node": "Save Drafts to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Drafts to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Mark Topic as Used",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Topic as Used": {
+      "main": [
+        [
+          {
+            "node": "Continue Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Continue Loop": {
+      "main": [
+        [
+          {
+            "node": "Loop: One Topic at a Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule: Peak Hours": {
+      "main": [
+        [
+          {
+            "node": "Get Approved Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Approved Content": {
+      "main": [
+        [
+          {
+            "node": "Has Approved Content?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Approved Content?": {
+      "main": [
+        [
+          {
+            "node": "1 Post Per Platform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1 Post Per Platform": {
+      "main": [
+        [
+          {
+            "node": "Loop Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Posts": {
+      "main": [
+        [
+          {
+            "node": "Route by Platform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Platform": {
+      "main": [
+        [
+          {
+            "node": "Instagram: Create Container",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Facebook: Publish Post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare X Thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram: Create Container": {
+      "main": [
+        [
+          {
+            "node": "Instagram: Publish Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram: Publish Post": {
+      "main": [
+        [
+          {
+            "node": "Build Posted Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook: Publish Post": {
+      "main": [
+        [
+          {
+            "node": "Build Posted Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare X Thread": {
+      "main": [
+        [
+          {
+            "node": "X: Post First Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "X: Post First Tweet": {
+      "main": [
+        [
+          {
+            "node": "Build Posted Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Posted Log": {
+      "main": [
+        [
+          {
+            "node": "Mark as Posted in Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark as Posted in Sheets": {
+      "main": [
+        [
+          {
+            "node": "Log to Posted Log Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Posted Log Sheet": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Posted Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Posted Alert": {
+      "main": [
+        [
+          {
+            "node": "Next Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Next Post": {
+      "main": [
+        [
+          {
+            "node": "Loop Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "378fb548-c0c8-4b5a-ae42-ec67a6ae9ef6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b96ae01051a5db04a9696ab8640fd455c55c7afaf6089f46cf04ff913caf1d83"
+  },
+  "id": "ICJpSlWiifmGhQXf3J-7H",
+  "tags": [
+    {
+      "updatedAt": "2026-05-01T09:10:01.711Z",
+      "createdAt": "2026-05-01T09:10:01.711Z",
+      "id": "EvshLthTUa7R6qt2",
+      "name": "Phase 1"
+    },
+    {
+      "updatedAt": "2026-05-01T09:10:38.921Z",
+      "createdAt": "2026-05-01T09:10:38.921Z",
+      "id": "Pl9UiGda0Dqw3B7B",
+      "name": "Phase 2"
+    },
+    {
+      "updatedAt": "2026-05-01T09:10:01.703Z",
+      "createdAt": "2026-05-01T09:10:01.703Z",
+      "id": "ZGW4jOAQ00ijdDiu",
+      "name": "Social Media Agent"
+    }
+  ]
+}
